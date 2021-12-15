@@ -1,6 +1,4 @@
-<center>
-    <img src = "images/title">
-</center>
+![Title](images/title.png)
 
 <span class = "pirate-font">Duck Pirates</span> is a game being developed by a team of university students from <b>The University of York</b> as part of a project.
 
