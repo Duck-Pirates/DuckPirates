@@ -1,5 +1,5 @@
 <center>
-    <h1 style= "height:1rem; width: 100%; font-family: Pirates; color: GoldenRod;" ><img src = "images/DuckPiratesLogo.jpg" style= "float:left;height:20%;">DuckPirates<img src = "images/DuckPiratesLogo.jpg" style = "float:right; height:50%;">
+    <img src = "images/title">
 </center>
 
 <span class = "pirate-font">Duck Pirates</span> is a game being developed by a team of university students from <b>The University of York</b> as part of a project.
