@@ -1,6 +1,6 @@
 ![Title](images/Title.png)
 
-<span class = "pirate-font">Duck Pirates</span> is a game being developed by a team of university students from <b>The University of York</b> as part of a project.
+**Duck Pirates** is a game being developed by a team of university students from **The University of York** as part of a project.
 
 The aim of this project is to create a pirate game based on our university's campus that has been flooded and is now plagued with pirates.
 
@@ -16,33 +16,10 @@ Stay tuned for more!
 
 <br>
 
-<center>
-    <h2 class = "pirate-font">Useful Links</h2>
-</center>
+## Useful Links
 
+![Google Drive](https://img.shields.io/static/v1?label=%20&message=Google%20Drive%20Folder&color=34A853&style=flat&logo=googledrive)
+
+[![Email](https://img.shields.io/static/v1?label=%20&message=Email%20Contacts&color=white&style=flat&logo=gmail)](mailto:abd516@york.ac.uk;bw1193@york.ac.uk;dfb505@york.ac.uk;dp1091@york.ac.uk;hm1561@york.ac.uk;hs1815@york.ac.uk?subject=Question%20For%20The%20DuckPirates%20Project)
 <br>
 
-<a href="mailto:abd516@york.ac.uk;bw1193@york.ac.uk;dfb505@york.ac.uk;dp1091@york.ac.uk;hm1561@york.ac.uk;hs1815@york.ac.uk?subject=Question For The DuckPirates Project" class = "pirate-font useful-link"><img src="images/icons/mail_white_24dp.svg" style="width:1.5rem;"></img>&nbsp;&nbsp;<u>Email</u></a>
-
-<a href="https://drive.google.com/drive/folders/1hJqjWuq5lhOoj07_k-1w93YmWBBX1mkj?usp=sharing" class = "pirate-font useful-link"><img src="images/icons/add_to_drive_white_24dp.svg" style="width:1.5rem;"></img>&nbsp;&nbsp;<u>Project's Google Drive Folder</u></a>
-<style>
-    @font-face{
-        font-family:Pirates; 
-        src: url(fonts/Thedarkestpearl-9Ym8Z.ttf);
-    }
-    a{
-        color: GoldenRod;
-    }
-    .pirate-font{
-        font-family:Pirates;
-        color: GoldenRod;
-    }
-    .useful-link{
-        height:2rem;
-        display:flex;
-        align-items: center;
-    }
-    .useful-link:hover{
-        text-decoration: none;
-    }
-</style>
