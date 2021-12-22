@@ -6,6 +6,9 @@ import com.game.DuckPirates;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
+
+		// If you run this method, the game will start.
+
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new DuckPirates(), config);
 	}
