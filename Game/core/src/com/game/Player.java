@@ -1,2 +1,5 @@
-package com.game;public class Player {
+package com.game;
+
+public class Player {
+
 }
