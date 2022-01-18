@@ -44,10 +44,14 @@ public class GameInit extends Game {
     private final static College[] collegesArray = new College[10];
 
     public GameInit(){
+
+        /* Colleges Init */
         for (int i = 0; i < 10; i++){
             College college = new College(GameInfo.colleges_names_array[i]);
             collegesArray[i] = college;
         }
+
+
     }
 
 
