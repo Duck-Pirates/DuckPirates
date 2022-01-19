@@ -8,6 +8,4 @@ public interface Ship {
     Vector2 velocity = new Vector2();
 
     void move();
-
-
 }

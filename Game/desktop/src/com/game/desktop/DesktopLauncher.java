@@ -12,7 +12,6 @@ public class DesktopLauncher {
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Duck Pirates";
-		config.useGL30 = false;
 		config.width = 1000;
 		config.height = 700;
 		config.addIcon("icon/duckpirateslogo_16x16.png", Files.FileType.Internal);
