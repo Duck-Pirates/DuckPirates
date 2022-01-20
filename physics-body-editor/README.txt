@@ -1,0 +1,1 @@
+This is a java executable that can be used to import an image and design a hit box arround said image - Alex

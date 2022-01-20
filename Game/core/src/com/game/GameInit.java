@@ -6,15 +6,19 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-// import sun.security.jgss.wrapper.GSSNameElement;
-// import java.util.Random;
+import com.game.utils.BodyEditorLoader;
 
 public class GameInit extends Game {
 
@@ -25,11 +29,13 @@ public class GameInit extends Game {
      */
 
     GameScreen gameScreen;
-    GameScreen pauseScreen;
     
     private Box2DDebugRenderer b2dr;
     private World world;
-    public Body player;
+    private Body player;
+    
+    private SpriteBatch batch;
+    private Texture ship;
     
     @Override
     public void create(){
@@ -41,9 +47,11 @@ public class GameInit extends Game {
         world = new World(new Vector2(0, 0f), false);
         b2dr = new Box2DDebugRenderer();
         
-        player = createBox(0, 0, 32, 32, false);
-        createBox(32, 32, 64, 32, true);
-        createBox(32, 0, 32, 32, true);
+        player = createShip(player, "shipBody", 0, 0, 64 / PPM);
+        createBody(32, 0, 32, 32, true);
+        
+        batch = new SpriteBatch();
+        ship = new Texture("ship/image/blueShip.png");
     }
     
     @Override
@@ -54,12 +62,16 @@ public class GameInit extends Game {
         Gdx.gl.glClearColor(62 / 255f, 95 / 255f, 201/ 255f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
-        b2dr.render(world, gameScreen.combinedCameraScaled());
+        batch.begin();
+        batch.draw(ship, player.getPosition().x * PPM - 32f, player.getPosition().y * PPM - 23.5f);
+        batch.end();
+        
+        b2dr.render(world, gameScreen.combinedCamera().scl(PPM));
     }
 
     @Override
     public void resize(int width, int height) {
-        
+        gameScreen.resize(width, height);
     }
     
     @Override
@@ -67,7 +79,8 @@ public class GameInit extends Game {
         super.dispose();
         world.dispose();
         b2dr.dispose();
-        pauseScreen.dispose();
+        batch.dispose();
+        gameScreen.dispose();
     }
     
     public void update(float delta) {
@@ -75,29 +88,41 @@ public class GameInit extends Game {
     	
     	inputUpdate(delta);
     	gameScreen.cameraUpdate(delta, player);
+    	batch.setProjectionMatrix(gameScreen.combinedCamera());
     }
     
     public void inputUpdate(float delta) {
-    	int horizontalForce = 0;
-    	int verticalForce = 0;
+    	float rotation = 0;
+    	float rotationScale = 0.05f;
     	
+    	int totalForce = 0;
+    	float horisontalForce = 0;
+    	float verticalForce = 0;
+    	
+    	if(player != null) {
     	if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-    		horizontalForce -= 1;
+    		rotation += 1;
     	}
     	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-    		horizontalForce += 1;
+    		rotation -= 1;
     	}
     	if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-    		verticalForce -= 1;
+    		totalForce -= 1;
     	}
     	if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
-    		verticalForce += 1;
+    		totalForce += 1;
     	}
     	
-    	player.setLinearVelocity(horizontalForce * 5, verticalForce * 5);
+    	float newAngle = rotation * rotationScale + player.getAngle();
+    	player.setTransform(player.getPosition(), newAngle);
+    	
+    	horisontalForce -= totalForce * MathUtils.sin(player.getAngle());
+    	verticalForce = totalForce * MathUtils.cos(player.getAngle());
+    	player.setLinearVelocity(horisontalForce * 5, verticalForce * 5);
+    	}
     }
     
-    public Body createBox(int x, int y, int width, int height, boolean isStatic) {
+    public Body createBody(int x, int y, int width, int height, boolean isStatic) {
     	Body pBody;
     	BodyDef def = new BodyDef();
     	
@@ -117,6 +142,28 @@ public class GameInit extends Game {
     	pBody.createFixture(shape, 1.0f);
     	shape.dispose();
     	return pBody;
+    }
+    
+    public Body createShip(Body model, String name, int x, int y, float scale) {
+        BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("ship/hitbox/shipHitbox.json"));
+     
+        // 1. Create a BodyDef.
+        BodyDef bd = new BodyDef();
+        bd.position.set(x / PPM, y / PPM);
+        bd.type = BodyType.DynamicBody;
+     
+        // 2. Create a FixtureDef.
+        FixtureDef fd = new FixtureDef();
+        fd.density = 1;
+        fd.friction = 0.5f;
+        fd.restitution = 0.3f;
+     
+        // 3. Create a Body.
+        model = world.createBody(bd);
+     
+        // 4. Create the body fixture automatically by using the loader.
+        loader.attachFixture(model, name, fd, scale);
+        return model;
     }
     
     /*

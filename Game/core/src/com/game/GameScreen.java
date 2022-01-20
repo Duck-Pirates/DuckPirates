@@ -1,11 +1,11 @@
 package com.game;
 
 import static com.game.utils.Constants.PPM;
+import static com.game.utils.Constants.SCALE;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -18,7 +18,6 @@ public class GameScreen implements Screen {
     private Viewport viewport;
 
     //graphics
-    private SpriteBatch batch; //this will give us the chance to render all the textures of the objects all together
     private Texture background;
 
     //timing
@@ -30,7 +29,7 @@ public class GameScreen implements Screen {
 
     GameScreen(float width, float height){
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, width / 2, height / 2);
+        camera.setToOrtho(false, width / SCALE, height / SCALE);
     }
 
     @Override
@@ -40,7 +39,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-    	camera.setToOrtho(false, width / 2, height / 2);
+    	camera.setToOrtho(false, width / SCALE, height / SCALE);
     }
 
     @Override
@@ -77,7 +76,7 @@ public class GameScreen implements Screen {
     	camera.update();
     }
     
-    public Matrix4 combinedCameraScaled() {
-    	return camera.combined.scl(PPM);
+    public Matrix4 combinedCamera() {
+    	return camera.combined;
     }
 }

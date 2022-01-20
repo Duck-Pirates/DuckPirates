@@ -1,1 +1,0 @@
-This is a tool that can be used to draw hit boxes - Alex
