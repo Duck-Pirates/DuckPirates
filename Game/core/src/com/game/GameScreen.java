@@ -39,6 +39,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        //TODO Resize bodies so objects (like ships) don't have the same dimensions when the screen resized
+        //TODO MAX and MIN value for resizing the screen
     	camera.setToOrtho(false, width / SCALE, height / SCALE);
     }
 
