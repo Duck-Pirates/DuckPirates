@@ -101,6 +101,7 @@ public class GameInit extends Game {
     	float verticalForce = 0;
     	
     	if(player != null) {
+            //TODO add WASD commands and mouse commands
     	if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
     		rotation += 1;
     	}
