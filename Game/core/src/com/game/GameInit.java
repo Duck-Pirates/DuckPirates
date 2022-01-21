@@ -7,10 +7,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -62,9 +62,13 @@ public class GameInit extends Game {
         
         Gdx.gl.glClearColor(62 / 255f, 95 / 255f, 201/ 255f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Sprite shipSprite = new Sprite(ship);
         
         batch.begin();
-        batch.draw(ship, player.getPosition().x * PPM - 32f, player.getPosition().y * PPM - 23.5f);
+        shipSprite.setPosition(player.getPosition().x * PPM - 32f, player.getPosition().y * PPM - 23.5f);
+        shipSprite.setOrigin(32f, 23.5f);
+        shipSprite.setRotation(player.getAngle() * MathUtils.radiansToDegrees);
+        shipSprite.draw(batch);
         batch.end();
         
         b2dr.render(world, gameScreen.combinedCamera().scl(PPM));
