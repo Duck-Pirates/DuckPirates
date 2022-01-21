@@ -10,6 +10,6 @@ public class DesktopLauncher {
 		// If you run this method, the game will start.
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new GameInit(), config);
+		new Application(new GameInit(), config);
 	}
 }
