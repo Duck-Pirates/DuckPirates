@@ -28,5 +28,10 @@ public class Gun(String side, Ship ship) {
                 fireNumber = ship.ammunitonStock;
             }
         }
+
+        for (int i, i < fireNumber, i++) {
+            //Create cannonball
+            ship.ammuniton --;  //Do this 1 by 1 so it's atomic... so that if you die mid-fire you don't lost too much ammo
+        }
     }
 }
