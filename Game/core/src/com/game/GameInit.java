@@ -106,16 +106,16 @@ public class GameInit extends Game {
     	
     	if(player != null) {
             //TODO add WASD commands and mouse commands
-    	if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+    	if(Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
     		rotation += 1;
     	}
-    	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+    	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
     		rotation -= 1;
     	}
-    	if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+    	if(Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
     		totalForce -= 1;
     	}
-    	if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+    	if(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
     		totalForce += 1;
     	}
     	
