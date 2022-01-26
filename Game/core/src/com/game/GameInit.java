@@ -97,15 +97,13 @@ public class GameInit extends Game {
     }
     
     public void inputUpdate(float delta) {
-    	float rotation = 0;
+    	int rotation = 0;
     	float rotationScale = 0.05f;
     	
-    	int totalForce = 0;
-    	float horisontalForce = 0;
-    	float verticalForce = 0;
+    	int drivingForce = 0;
+    	float horisontalVelocity = 0;
+    	float verticalVelocity = 0;
     	
-    	if(player != null) {
-            //TODO add WASD commands and mouse commands
     	if(Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
     		rotation += 1;
     	}
@@ -113,19 +111,28 @@ public class GameInit extends Game {
     		rotation -= 1;
     	}
     	if(Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-    		totalForce -= 1;
+    		drivingForce -= 4;
     	}
     	if(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-    		totalForce += 1;
+    		drivingForce += 1;
     	}
     	
-    	float newAngle = rotation * rotationScale + player.getAngle();
+    	float newVelocity = shipVelocity((float)Math.sqrt(Math.pow(player.getLinearVelocity().x, 2) +
+    			Math.pow(player.getLinearVelocity().y, 2)), drivingForce, delta);
+    	horisontalVelocity -= newVelocity * MathUtils.sin(player.getAngle());
+    	verticalVelocity = newVelocity * MathUtils.cos(player.getAngle());
+    	player.setLinearVelocity(horisontalVelocity, verticalVelocity);
+    	
+    	float newAngle = shipRotation(rotation, newVelocity) * rotationScale + player.getAngle();
     	player.setTransform(player.getPosition(), newAngle);
-    	
-    	horisontalForce -= totalForce * MathUtils.sin(player.getAngle());
-    	verticalForce = totalForce * MathUtils.cos(player.getAngle());
-    	player.setLinearVelocity(horisontalForce * 5, verticalForce * 5);
-    	}
+    }
+    
+    public float shipVelocity(float velocity, int drivingForce, float delta) {
+    	return velocity + (drivingForce - (velocity * 0.05f)) * delta;
+    }
+    
+    public float shipRotation(int rotation, float velocity) {
+    	return rotation * velocity * 0.2f;
     }
     
     public Body createBody(int x, int y, int width, int height, boolean isStatic) {
