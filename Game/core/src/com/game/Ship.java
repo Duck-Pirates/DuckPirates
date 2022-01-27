@@ -70,5 +70,6 @@ public class Ship(College college) {
         this.active = false;
         return true; // Return to be able to verify elsewhere if a ship is made inactive... i.e. if (otherShip.softDestroy() --> true, we know it's been destroyed properly
     }
+
 }
 

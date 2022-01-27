@@ -1,20 +1,23 @@
 package com.game;
 
+import static com.game.utils.Constants.PPM;
+import static com.game.utils.Constants.SCALE;
+
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameScreen implements Screen {
 
     //screen
-    private Camera camera;
+    private OrthographicCamera camera;
     private Viewport viewport;
 
     //graphics
-    private SpriteBatch batch; //this will give us the chance to render all the textures of the objects all together
     private Texture background;
 
     //timing
@@ -24,18 +27,21 @@ public class GameScreen implements Screen {
     private final int WORLD_WIDTH = 0;
     private final int WORLD_HEIGHT = 0;
 
-    GameScreen(){
+    GameScreen(float width, float height){
         camera = new OrthographicCamera();
+        camera.setToOrtho(false, width / SCALE, height / SCALE);
     }
 
     @Override
     public void render(float delta) {
-
+    	
     }
 
     @Override
     public void resize(int width, int height) {
-
+        //TODO Resize bodies so objects (like ships) don't have the same dimensions when the screen resized
+        //TODO MAX and MIN value for resizing the screen
+    	camera.setToOrtho(false, width / SCALE, height / SCALE);
     }
 
     @Override
@@ -54,12 +60,25 @@ public class GameScreen implements Screen {
     }
 
     @Override
+    public void show() {
+
+    }
+    
+    @Override
     public void dispose() {
 
     }
-
-    @Override
-    public void show() {
-
+    
+    public void cameraUpdate(float delta, Body player) {
+    	Vector3 position = camera.position;
+    	position.x = player.getPosition().x * PPM;
+    	position.y = player.getPosition().y * PPM;
+    	camera.position.set(position);
+    	
+    	camera.update();
+    }
+    
+    public Matrix4 combinedCamera() {
+    	return camera.combined;
     }
 }
