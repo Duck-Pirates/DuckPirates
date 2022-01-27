@@ -9,7 +9,8 @@ public class Ship(College college) {
 
     boolean active = true; //Ships begin active (/alive)
 
-    velocity = new double[2] //An array of length 2, with doubles, will be used to represent vlocity later on
+    velocity = new double[2] //An array of length 2, with doubles, will be used to represent velocity later on
+    currentPosition = new double[2] //An array of length 2, with doubles, will be used to represent position later on
 
     College college = college;
     int HP = 5000;
