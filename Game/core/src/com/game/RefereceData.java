@@ -1,9 +1,12 @@
 // Reference data about the game
+// Sort of like a settings page
 class ReferenceData {
     int shipCost = 3000;
 
     int[] shipUpgrades;
     shipUpgrades = []
+
+    maxShips = 10 //Default value - used in Player class
 
     Map<String, Integer> map = Stream.of(new Object[][] {
             { "cannon", 600 },
