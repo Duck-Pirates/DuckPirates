@@ -29,11 +29,17 @@ public class GameInit extends Game {
 
      */
 
+	
+	
     GameScreen gameScreen;
     
+    GameInfo gameInfo = new GameInfo();
+    
     private Box2DDebugRenderer b2dr;
-    private World world;
+    public static World world;
     private Body player;
+    private College derwentCollege;
+    private Texture derwent;
     
     private SpriteBatch batch;
     private Texture ship;
@@ -48,11 +54,13 @@ public class GameInit extends Game {
         world = new World(new Vector2(0, 0f), false);
         b2dr = new Box2DDebugRenderer();
         
+        
+        derwentCollege = new College("Derwent", 128, 128);
         player = createShip(player, "shipBody", 0, 0, 64 / PPM);
-        createBody(32, 0, 32, 32, true);
         
         batch = new SpriteBatch();
         ship = new Texture("ship/image/blueShip.png");
+        derwent = new Texture("college/image/Derwent.png");
     }
     
     @Override
@@ -63,12 +71,17 @@ public class GameInit extends Game {
         Gdx.gl.glClearColor(62 / 255f, 95 / 255f, 201/ 255f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Sprite shipSprite = new Sprite(ship);
+        Sprite derwentSprite = new Sprite(derwent);
         
         batch.begin();
-        shipSprite.setPosition(player.getPosition().x * PPM - 32f, player.getPosition().y * PPM - 23.5f);
         shipSprite.setOrigin(32f, 23.5f);
+        shipSprite.setPosition(player.getPosition().x * PPM - 32f, player.getPosition().y * PPM - 23.5f);
         shipSprite.setRotation(player.getAngle() * MathUtils.radiansToDegrees);
         shipSprite.draw(batch);
+        
+        derwentSprite.setOrigin(64f, 64f);
+        derwentSprite.setPosition(derwentCollege.getX(), derwentCollege.getY());
+        derwentSprite.draw(batch);
         batch.end();
         
         b2dr.render(world, gameScreen.combinedCamera().scl(PPM));
@@ -128,7 +141,7 @@ public class GameInit extends Game {
     }
     
     public float shipVelocity(float velocity, int drivingForce, float delta) {
-    	return velocity + (drivingForce - (velocity * 0.05f)) * delta;
+    	return velocity + (drivingForce - (velocity * 0.2f)) * delta;
     }
     
     public float shipRotation(int rotation, float velocity) {
@@ -185,7 +198,6 @@ public class GameInit extends Game {
 
      */
 
-//    GameInfo gameInfo = new GameInfo();
 //    private final static College[] collegesArray = new College[10];
 //
 //    public GameInit(){
