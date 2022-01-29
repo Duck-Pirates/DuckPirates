@@ -11,13 +11,18 @@ import com.game.GameInit;
 
 public class CreateObject {
 
-	public static Body createObject(String name, String file, float x, float y) {
+	public static Body createObject(String name, String file, float x, float y, boolean dynamic) {
     	BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal(file));
         
         // 1. Create a BodyDef.
         BodyDef bd = new BodyDef();
         bd.position.set(x / PPM, y / PPM);
-        bd.type = BodyType.StaticBody;
+        if (dynamic){
+            bd.type = BodyType.DynamicBody;
+        }
+        else{
+            bd.type = BodyType.StaticBody;
+        }
      
         // 2. Create a FixtureDef.
         FixtureDef fd = new FixtureDef();

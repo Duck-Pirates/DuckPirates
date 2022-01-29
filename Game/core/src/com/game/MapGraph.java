@@ -1,4 +1,8 @@
-public class MapGraph<T extends graphNode> {
+package com.game;
+
+import java.util.Set;
+
+public class MapGraph<T extends GraphNode> {
     private final Set<T> nodes;
     private final Map<String, Set<String>> connections;
 

@@ -1,3 +1,5 @@
+package com.game;
+
 public class Path {
     public int getLength();
     public Step getStep(int index);

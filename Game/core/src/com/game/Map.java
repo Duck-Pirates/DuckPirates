@@ -1,3 +1,5 @@
+package com.game;
+
 public interface Map {
     public int getWidthInTiles();
     public int getHeightInTiles();

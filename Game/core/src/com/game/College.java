@@ -17,7 +17,7 @@ public class College {
         //ships = new Ship[GameInfo.getMaxNumShips()];
         this.x = x;
         this.y = y;
-        body = createObject("College", "college/hitbox/collegeHitbox.json", 128f, 128f);
+        body = createObject("College", "college/hitbox/collegeHitbox.json", 128f, 128f, Boolean.FALSE);
     }
     
     public float getX() {

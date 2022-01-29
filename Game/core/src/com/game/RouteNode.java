@@ -1,3 +1,5 @@
+package com.game;
+
 // This is a nodew in the selected route, rather than in the graph itself
 class RouteNode<T extends GraphNode> implements Comparable<RouteNode> {
     private final T current;
