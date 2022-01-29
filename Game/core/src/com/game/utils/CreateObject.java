@@ -6,23 +6,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.game.GameInit;
 
 public class CreateObject {
 
-	public static Body createObject(String name, String file, float x, float y, float scale, boolean dynamic) {
+	public static Body createObject(String file, float x, float y, int scale, boolean isStatic) {
     	BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal(file));
         
         // 1. Create a BodyDef.
         BodyDef bd = new BodyDef();
         bd.position.set(x / PPM, y / PPM);
-        if (dynamic){
-            bd.type = BodyType.DynamicBody;
-        }
-        else{
-            bd.type = BodyType.StaticBody;
-        }
+        
+        if(isStatic) 
+    		bd.type = BodyDef.BodyType.StaticBody;
+    	else 
+    		bd.type = BodyDef.BodyType.DynamicBody;
      
         // 2. Create a FixtureDef.
         FixtureDef fd = new FixtureDef();
@@ -34,7 +32,7 @@ public class CreateObject {
 		Body model = GameInit.world.createBody(bd);
      
         // 4. Create the body fixture automatically by using the loader.
-        loader.attachFixture(model, name, fd, scale/PPM);
+        loader.attachFixture(model, "Name", fd, scale / PPM);
         return model;
     }
 }
