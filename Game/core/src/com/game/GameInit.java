@@ -20,6 +20,8 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.game.utils.BodyEditorLoader;
 
+import java.util.Random;
+
 public class GameInit extends Game {
 
 
@@ -37,9 +39,11 @@ public class GameInit extends Game {
     
     private Box2DDebugRenderer b2dr;
     public static World world;
-    private Body player;
+    private Player player;
+    private Body playerBody;
     private College derwentCollege;
     private Texture derwent;
+    private College playerCollege;
     
     private SpriteBatch batch;
     private Texture ship;
@@ -56,7 +60,7 @@ public class GameInit extends Game {
         
         
         derwentCollege = new College("Derwent", 128, 128);
-        player = createShip(player, "shipBody", 0, 0, 64 / PPM);
+        playerBody = player.getPlayerBody();
         
         batch = new SpriteBatch();
         ship = new Texture("ship/image/blueShip.png");
@@ -170,40 +174,20 @@ public class GameInit extends Game {
     	return pBody;
     }
     
-    public Body createShip(Body model, String name, int x, int y, float scale) {
-        BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("ship/hitbox/shipHitbox.json"));
-     
-        // 1. Create a BodyDef.
-        BodyDef bd = new BodyDef();
-        bd.position.set(x / PPM, y / PPM);
-        bd.type = BodyType.DynamicBody;
-     
-        // 2. Create a FixtureDef.
-        FixtureDef fd = new FixtureDef();
-        fd.density = 1;
-        fd.friction = 0.5f;
-        fd.restitution = 0.3f;
-     
-        // 3. Create a Body.
-        model = world.createBody(bd);
-     
-        // 4. Create the body fixture automatically by using the loader.
-        loader.attachFixture(model, name, fd, scale);
-        return model;
-    }
-    
     /*
 
     Actual game init
 
      */
 
-//    private final static College[] collegesArray = new College[10];
-//
-//    public GameInit(){
-//
-//
-//    }
+
+   public GameInit(){
+       //TODO Implement choice of college
+       int rand = new Random().nextInt(10);
+       this.playerCollege = new College(gameInfo.getCollegeNames()[rand], 256, 256);
+       this.player = new Player(playerCollege);
+       this.playerBody = player.getBody();
+   }
  
 
 }

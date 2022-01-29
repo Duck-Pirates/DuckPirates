@@ -11,7 +11,7 @@ import com.game.GameInit;
 
 public class CreateObject {
 
-	public static Body createObject(String name, String file, float x, float y, boolean dynamic) {
+	public static Body createObject(String name, String file, float x, float y, float scale, boolean dynamic) {
     	BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal(file));
         
         // 1. Create a BodyDef.
@@ -34,7 +34,7 @@ public class CreateObject {
 		Body model = GameInit.world.createBody(bd);
      
         // 4. Create the body fixture automatically by using the loader.
-        loader.attachFixture(model, name, fd, 128 / PPM);
+        loader.attachFixture(model, name, fd, scale/PPM);
         return model;
     }
 }

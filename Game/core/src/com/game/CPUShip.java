@@ -7,7 +7,7 @@ import { Map } from 'game/map';  //This will need to import the map (matrix) for
 public class CPUShip extends Ship {
 
     CPUShip(College college, int x, int y){
-        super(college, x, y);
+        super(college, x, y, Boolean.FALSE);
     }
     // Seek takes a destination as a 2D array of doubles (co-ordinates)
     public void seek(double[] destination) {

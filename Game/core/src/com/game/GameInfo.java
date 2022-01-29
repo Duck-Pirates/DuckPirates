@@ -20,4 +20,6 @@ public class GameInfo {
     public static int getMaxNumShips() {
        return maxNumShips;
     }
+
+    public static String[] getCollegeNames(){return collegeNames;}
 }
