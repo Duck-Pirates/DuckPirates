@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 public class College {
 
-    public String collegeName;
+    public String name;
     private Body body;
     public Ship[] ships;
     
@@ -19,12 +19,12 @@ public class College {
     private float y;
 
     College(String name, float x, float y){
-        collegeName = name;
+        this.name = name;
         this.x = x;
         this.y = y;
         body = createObject("college/hitbox/collegeHitbox.json", x, y, 128, true);
         ships = new Ship[GameInfo.getMaxNumShips()];
-        texture = new Texture("college/image/Derwent.png");        
+        texture = new Texture("college/image/" + name + ".png");        
     }
     
     public boolean update(float delta) {
@@ -42,17 +42,25 @@ public class College {
     	return false;
     }
     
-    public boolean addShip() {
+    public boolean addPlayer() {
    		// Finds the first entry in the array that is empty. If non are then returns true
     	// telling the parent that it couldn't make a new ship
     	for(int i = 0; i < GameInfo.getMaxNumShips(); i++) {
     		if(ships[i] == null) {
-    			ships[i] = new Ship(this);
+    			ships[i] = new PlayerShip(this);
     			return false;
     		}
     	}
     	
     	return true;
+    }
+    
+    public void addShip() {
+    	for(int i = 0; i < GameInfo.getMaxNumShips(); i++) {
+    		if(ships[i] == null) {
+    			ships[i] = new CPUShip(this);
+    		}
+    	}
     }
     
     public float getX() {
@@ -62,6 +70,4 @@ public class College {
     public float getY() {
     	return y;
     }
-    
-    
 }

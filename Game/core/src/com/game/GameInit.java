@@ -20,29 +20,15 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.game.utils.BodyEditorLoader;
 
 public class GameInit extends Game {
-
-
-    /*
-
-    Screen init
-
-     */
-
 	
-	
+	GameInfo gameInfo = new GameInfo("Derwent", 4);
     GameScreen gameScreen;
-    
-    GameInfo gameInfo = new GameInfo();
     
     private Box2DDebugRenderer b2dr;
     public static World world;
-    private Body player;
     private College[] colleges;
-    private College derwentCollege;
-    private Texture derwent;
     
     public static SpriteBatch batch;
-    private Texture ship;
     
     @Override
     public void create(){
@@ -59,17 +45,16 @@ public class GameInit extends Game {
         colleges = new College[gameInfo.numberOfColleges];
         
         for(int i = 0; i < gameInfo.numberOfColleges; i++) {
-        	colleges[i] = new College(gameInfo.collegeNames[i], -128f * i, 128f);
-        	colleges[i].addShip();
+        	if(i != 0) {
+	        	colleges[i] = new College(gameInfo.colleges[i], 128f * i, 128f);
+	        	colleges[i].addShip();
+        	} else {
+	        	colleges[i] = new College(gameInfo.colleges[i], 128f * i, 128f);
+        		colleges[i].addPlayer();
+	        }
         }
         
-        
-        derwentCollege = new College("Derwent", 128f, 128f);
-        player = createShip(player, "Name", 0, 0, 64 / PPM);
-        
         batch = new SpriteBatch();
-        ship = new Texture("ship/image/blueShip.png");
-        derwent = new Texture("college/image/Derwent.png");
     }
     
     @Override
@@ -80,18 +65,7 @@ public class GameInit extends Game {
         Gdx.gl.glClearColor(62 / 255f, 95 / 255f, 201/ 255f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
-        Sprite shipSprite = new Sprite(ship);
-        Sprite derwentSprite = new Sprite(derwent);
-        
         batch.begin();
-        shipSprite.setOrigin(32f, 23.5f);
-        shipSprite.setPosition(player.getPosition().x * PPM - 32f, player.getPosition().y * PPM - 23.5f);
-        shipSprite.setRotation(player.getAngle() * MathUtils.radiansToDegrees);
-        shipSprite.draw(batch);
-        
-        derwentSprite.setOrigin(64f, 64f);
-        derwentSprite.setPosition(derwentCollege.getX(), derwentCollege.getY());
-        derwentSprite.draw(batch);
         
         for(College i : colleges) {
         	if (i != null) {
@@ -104,16 +78,28 @@ public class GameInit extends Game {
 		                sprite.draw(batch);
 	        		}
 	        	}
-	        	
 	        	Sprite sprite = new Sprite(i.texture);
 	        	sprite.setOrigin(64f, 64f);
 	            sprite.setPosition(i.getX(), i.getY());
 	            sprite.draw(batch);
         	}
         }
+        
         batch.end();
         
         b2dr.render(world, gameScreen.combinedCamera().scl(PPM));
+    }
+    
+    public void update(float delta) {
+    	world.step(1 / 60f, 6, 2);
+    	
+    	for(College i : colleges) {
+    		if(i != null) {
+    			i.update(delta);
+    		}
+    	}
+    	gameScreen.cameraUpdate(delta, colleges[0].ships[0].body);
+    	batch.setProjectionMatrix(gameScreen.combinedCamera());
     }
 
     @Override
@@ -129,54 +115,4 @@ public class GameInit extends Game {
         batch.dispose();
         gameScreen.dispose();
     }
-    
-    public void update(float delta) {
-    	world.step(1 / 60f, 6, 2);
-    	
-    	for(College i : colleges) {
-    		if(i != null) {
-    			i.update(delta);
-    		}
-    	}
-    	
-    	gameScreen.cameraUpdate(delta, player);
-    	batch.setProjectionMatrix(gameScreen.combinedCamera());
-    }
-    
-    public Body createShip(Body model, String name, int x, int y, float scale) {
-        BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("ship/hitbox/shipHitbox.json"));
-     
-        // 1. Create a BodyDef.
-        BodyDef bd = new BodyDef();
-        bd.position.set(x / PPM, y / PPM);
-        bd.type = BodyType.DynamicBody;
-     
-        // 2. Create a FixtureDef.
-        FixtureDef fd = new FixtureDef();
-        fd.density = 1;
-        fd.friction = 0.5f;
-        fd.restitution = 0.3f;
-     
-        // 3. Create a Body.
-        model = world.createBody(bd);
-     
-        // 4. Create the body fixture automatically by using the loader.
-        loader.attachFixture(model, name, fd, scale);
-        return model;
-    }
-    
-    /*
-
-    Actual game init
-
-     */
-
-//    private final static College[] collegesArray = new College[10];
-//
-//    public GameInit(){
-//
-//
-//    }
- 
-
 }
