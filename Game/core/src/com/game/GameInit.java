@@ -2,9 +2,9 @@ package com.game;
 
 import static com.game.utils.Constants.PPM;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -16,7 +16,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.game.utils.BodyEditorLoader;
 
@@ -38,10 +37,11 @@ public class GameInit extends Game {
     private Box2DDebugRenderer b2dr;
     public static World world;
     private Body player;
+    private College[] colleges;
     private College derwentCollege;
     private Texture derwent;
     
-    private SpriteBatch batch;
+    public static SpriteBatch batch;
     private Texture ship;
     
     @Override
@@ -49,14 +49,23 @@ public class GameInit extends Game {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
         
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
+        
         gameScreen = new GameScreen(w, h);
         
         world = new World(new Vector2(0, 0f), false);
         b2dr = new Box2DDebugRenderer();
         
+        colleges = new College[gameInfo.numberOfColleges];
         
-        derwentCollege = new College("Derwent", 128, 128);
-        player = createShip(player, "shipBody", 0, 0, 64 / PPM);
+        for(int i = 0; i < gameInfo.numberOfColleges; i++) {
+        	colleges[i] = new College(gameInfo.collegeNames[i], -128f * i, 128f);
+        	colleges[i].addShip();
+        }
+        
+        
+        derwentCollege = new College("Derwent", 128f, 128f);
+        player = createShip(player, "Name", 0, 0, 64 / PPM);
         
         batch = new SpriteBatch();
         ship = new Texture("ship/image/blueShip.png");
@@ -70,6 +79,7 @@ public class GameInit extends Game {
         
         Gdx.gl.glClearColor(62 / 255f, 95 / 255f, 201/ 255f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        
         Sprite shipSprite = new Sprite(ship);
         Sprite derwentSprite = new Sprite(derwent);
         
@@ -82,6 +92,25 @@ public class GameInit extends Game {
         derwentSprite.setOrigin(64f, 64f);
         derwentSprite.setPosition(derwentCollege.getX(), derwentCollege.getY());
         derwentSprite.draw(batch);
+        
+        for(College i : colleges) {
+        	if (i != null) {
+	        	for(Ship j : i.ships) {
+	        		if (j != null) {
+		        		Sprite sprite = new Sprite(j.texture);
+		        		sprite.setOrigin(32f, 23.5f);
+		                sprite.setPosition(j.body.getPosition().x * PPM - 32f, j.body.getPosition().y * PPM - 23.5f);
+		                sprite.setRotation(j.body.getAngle() * MathUtils.radiansToDegrees);
+		                sprite.draw(batch);
+	        		}
+	        	}
+	        	
+	        	Sprite sprite = new Sprite(i.texture);
+	        	sprite.setOrigin(64f, 64f);
+	            sprite.setPosition(i.getX(), i.getY());
+	            sprite.draw(batch);
+        	}
+        }
         batch.end();
         
         b2dr.render(world, gameScreen.combinedCamera().scl(PPM));
@@ -104,70 +133,14 @@ public class GameInit extends Game {
     public void update(float delta) {
     	world.step(1 / 60f, 6, 2);
     	
-    	inputUpdate(delta);
+    	for(College i : colleges) {
+    		if(i != null) {
+    			i.update(delta);
+    		}
+    	}
+    	
     	gameScreen.cameraUpdate(delta, player);
     	batch.setProjectionMatrix(gameScreen.combinedCamera());
-    }
-    
-    public void inputUpdate(float delta) {
-    	int rotation = 0;
-    	float rotationScale = 0.05f;
-    	
-    	int drivingForce = 0;
-    	float horisontalVelocity = 0;
-    	float verticalVelocity = 0;
-    	
-    	if(Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-    		rotation += 1;
-    	}
-    	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-    		rotation -= 1;
-    	}
-    	if(Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-    		drivingForce -= 4;
-    	}
-    	if(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-    		drivingForce += 1;
-    	}
-    	
-    	float newVelocity = shipVelocity((float)Math.sqrt(Math.pow(player.getLinearVelocity().x, 2) +
-    			Math.pow(player.getLinearVelocity().y, 2)), drivingForce, delta);
-    	horisontalVelocity -= newVelocity * MathUtils.sin(player.getAngle());
-    	verticalVelocity = newVelocity * MathUtils.cos(player.getAngle());
-    	player.setLinearVelocity(horisontalVelocity, verticalVelocity);
-    	
-    	float newAngle = shipRotation(rotation, newVelocity) * rotationScale + player.getAngle();
-    	player.setTransform(player.getPosition(), newAngle);
-    }
-    
-    public float shipVelocity(float velocity, int drivingForce, float delta) {
-    	return velocity + (drivingForce - (velocity * 0.2f)) * delta;
-    }
-    
-    public float shipRotation(int rotation, float velocity) {
-    	return rotation * velocity * 0.2f;
-    }
-    
-    public Body createBody(int x, int y, int width, int height, boolean isStatic) {
-    	Body pBody;
-    	BodyDef def = new BodyDef();
-    	
-    	if(isStatic) 
-    		def.type = BodyDef.BodyType.StaticBody;
-    	else 
-    		def.type = BodyDef.BodyType.DynamicBody;
-    	
-	    def.position.set(x / PPM, y / PPM);
-	    def.fixedRotation = true;
-    	
-    	pBody = world.createBody(def);
-    	
-    	PolygonShape shape = new PolygonShape();
-    	shape.setAsBox(width / 2 / PPM, height / 2 / PPM);
-    	
-    	pBody.createFixture(shape, 1.0f);
-    	shape.dispose();
-    	return pBody;
     }
     
     public Body createShip(Body model, String name, int x, int y, float scale) {
