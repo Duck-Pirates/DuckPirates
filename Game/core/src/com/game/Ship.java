@@ -11,9 +11,16 @@ public class Ship {
     private College college;
     private Body body;
     
-    Ship(College college, int x, int y) {
+    Ship(College college, int x, int y, boolean player) {
         this.college = college;
-        body = createObject(String.format("%s's Ship", college), "ship/hitbox/shipHitbox.json", x, y, Boolean.TRUE);
+        String name = String.format("%s's Ship", college);
+        if (player){
+            name = String.format("Player's Ship (%s)", college);
+        }
+        body = createObject(name, "ship/hitbox/shipHitbox.json", x, y, 64, Boolean.TRUE);
+    }
+
+    public Body getBody(){
+        return body;
     }
 }
-
