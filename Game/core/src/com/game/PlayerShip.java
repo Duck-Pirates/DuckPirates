@@ -37,11 +37,16 @@ public class PlayerShip extends Ship {
     	if(Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
     		drivingForce += 1;
     	}
+		if(!Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)){
+			if (drivingForce != 0){
+				drivingForce -= 1;
+			}
+		}
     	
     	velocity = super.velocityUpdate(velocity, drivingForce, delta);
-    	float horisontalVelocity = -velocity * MathUtils.sin(body.getAngle());
+    	float horizontalVelocity = -velocity * MathUtils.sin(body.getAngle());
     	float verticalVelocity = velocity * MathUtils.cos(body.getAngle());
-    	body.setLinearVelocity(horisontalVelocity, verticalVelocity);
+    	body.setLinearVelocity(horizontalVelocity, verticalVelocity);
     	
     	float newAngle = super.rotationUpdate(rotation, velocity, delta) * rotationScale + body.getAngle();
     	body.setTransform(body.getPosition(), newAngle);
