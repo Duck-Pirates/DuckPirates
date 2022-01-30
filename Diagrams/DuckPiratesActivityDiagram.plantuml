@@ -1,0 +1,57 @@
+@startuml DuckPiratesActivityDiagram
+|s| Start
+|t| Tutorial
+|g| Game
+|p| Pause Menu
+|s|
+start
+:Game has started;
+|t|
+repeat
+:The tutorial is given to the player;
+repeat while (Is player ready?) is (No)
+->Yes;
+|g|
+repeat
+:The player chooses a college;
+partition GameLoop {
+ :The timer starts;
+ repeat
+  if (Has the player paused?) then (Yes)
+    |p|
+    :The pause menu appears;
+    if (Have some settings changed) then (Yes)
+      :The settings are updated;
+    else (No)
+    endif
+  else (No)
+    |g|
+    ->;
+  endif
+  if (Is player moving?) then (Yes)
+    |g|
+    :Boat's position is updated;
+  else (No)
+    ->;
+  endif
+  if (Has the player found a duck?) then (Yes)
+    :The duck is added to the college;
+    :The coin per second value is increased;
+  else (No)
+    ->;
+  endif
+ repeat while (Game is over?) is (No)
+}
+|s|
+-> Yes;
+if (Did the player lose?) then (Yes)
+  :Loss Screen;
+else (No)
+  :Win Screen;
+endif
+repeat while (Does the player want to play again?) is (Yes)
+->No;
+:The game finishes;
+end
+
+@enduml

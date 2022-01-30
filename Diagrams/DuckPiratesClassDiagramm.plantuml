@@ -1,0 +1,186 @@
+@startuml DuckPirates
+!theme cerulean-outline
+title DuckPirates Class Diagram
+
+' Imported Classes /'
+
+package LIBGDX_Classes <<Node>>{
+class Game
+Interface Screen
+}
+class Game <<(C,#00FF00)>>
+Interface Screen <<(I,#00BB00)>>
+
+
+' Classes \'
+
+package com.game.desktop{
+class DesktopLauncher{
++ {static} void main (String[] arg)
+}
+}
+
+package com.game{
+class GameInit extends Game{
+    ..Attributes..
+    + GameInfo gameInfo
+    + GameScreen gameScreen
+    + {static} [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/World.html World]] world
+    + {static} [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/g2d/SpriteBatch.html SpriteBatch]] batch 
+    - [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Box2DDebugRenderer.html Box2DDebugRenderer]] b2dr 
+    - College[] colleges
+    ..Override Methods..
+    + void create()
+    + void render()
+    + void resize(int width, int height)
+    + void dispose()
+    ..Class Methods..
+    + void update(float delta)
+}
+
+class College{
+    ..Attributes..
+    + String name
+    + Ship[] ships
+    + [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/Texture.html Texture]] texture
+    + int n_ducks
+    + int coins
+    - [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Body.html Body]] body
+    - int hp = 1000
+    - float x
+    - float y
+    ..Class Methods..
+    + College(String name, float x, float y)
+    + boolean update(float delta)
+    + boolean addPlayer()
+    + void addShip()
+    + float getX()
+    + float getY()
+}
+
+class Ship{
+..Attributes..
++ Body body
++ Texture texture
+- College college
+- float velocity = 0
+- int hp = 5000
+- int maxAmo = 100
+- int ammunitonStock = 50
+..Class Methods..
++ Ship(College college)
++ boolean update(float delta)
++ float velocityUpdate(float velocity, int drivingForce, float delta)
++ float rotationUpdate(int rotation, float velocity, float delta)
+}
+
+class CPUShip extends Ship{
++ CPUShip(College college)
+}
+
+class PlayerShip extends Ship{
+..Attributes..
+- float velocity = 0;
+- int hp = 5000
+..Override Methods..
++ boolean update(float delta)
+..Class Methods..
++ PlayerShip(College college)
+}
+
+Class GameInfo{
+..Attributes..
++ String difficulty = "Easy"
++ double masterVolume = 0.5
++ double musicVolume = 0.5
++ double soundFxVolume = 0.5
++ String playerCollege
++ int numberOfColleges
++ {static} String[] collegesNames
++ String[10] colleges
+- {static} int maxNumShips = 5
+- {static} int maxNumDucks = 50
+- {static} float coinsPerDuckPerSecond = 1.5
+..Class Methods..
++ {static} int getMaxNumBoats()
++ {static} int getMaxNumDucks()
++ {static} float getCoinsPerDuckPerSecond()
+}
+
+Class GameScreen implements Screen{
+..Attributes..
+- [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/OrthographicCamera.html OrthographicCamera]] camera
+- [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/utils/viewport/Viewport.html Viewport]] viewport
+- [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/Texture.html Texture]] background
+- int backgroundOffset
+- {static} int WORLD_WIDTH = 0
+- {static} int WORLD_HEIGHT = 0
+..Override Methods..
++ void render(float delta)
++ void resize(int width, int height)
++ void pause()
++ void resume()
++ void hide()
++ void show()
++ void dispose()
+..Class Methods..
++ GameScreen(float width, float height)
++ void cameraUpdate(float delta, [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Body.html Body]] player)
++ [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/math/Matrix4.html Matrix4]] combinedCamera()
+}
+}
+package com.game.utils{
+class Constants <<Final>>{
++ {static} float PPM
++ {static} float SCALE
+}
+package HitBox <<Node>>{
+class BodyEditorLoader{
+}
+}
+class CreateObject{
++ {static} Body createObject(String file, float x, float y, int scale, boolean isStatic)
+}
+}
+
+
+' Class and attributes links /'
+
+DesktopLauncher::main *-- GameInit
+GameInit::GameScreen *-- GameScreen
+GameInit::GameInfo *-- GameInfo
+GameInit::College *-- College
+College::Ship *-- Ship
+PlayerShip::update .. Ship::update
+
+' Notes /'
+note top of Game
+ [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/Game.html Game Class Documentation]]
+end note
+
+note top of Screen
+ [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/Screen.html Screen Interface Documentation]]
+end note
+
+note right of GameInit::update
+ Updates the camera, the world, colleges, ships and checks if the escape button has been pressed for the pause menu
+end note
+
+note right of GameScreen::cameraUpdate
+ Updates the position of the camera
+end note
+
+note right of GameScreen::combinedCamera
+ Returns the projection and view matrix of the camera
+end note
+
+note bottom of CreateObject
+ Creates any type of Body (Object) in the game
+end note
+
+note right of Ship::update
+ Returns true if the ship has been sunk, false otherwise
+end note
+
+footer Diagram By Davide Filippo Bressani
+@enduml
