@@ -2,9 +2,7 @@ package com.game;
 
 import static com.game.utils.Constants.PPM;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,10 +10,17 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 
 public class GameInit extends Game {
-	
-	GameInfo gameInfo = new GameInfo("Derwent", 4);
+
+    //TODO Pause Screen and End Game Screen
+    //TODO Combact College
+    //TODO Private Classes
+    //TODO Points
+
+
+    GameInfo gameInfo = new GameInfo("Derwent", 4);
     GameScreen gameScreen;
     
     private Box2DDebugRenderer b2dr;
@@ -95,6 +100,13 @@ public class GameInit extends Game {
     	}
     	gameScreen.cameraUpdate(delta, colleges[0].ships[0].body);
     	batch.setProjectionMatrix(gameScreen.combinedCamera());
+
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
+            gameScreen.pause();
+            if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
+                gameScreen.resume();
+            }
+        }
     }
 
     @Override
