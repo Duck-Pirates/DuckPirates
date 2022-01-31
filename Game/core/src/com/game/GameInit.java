@@ -2,6 +2,8 @@ package com.game;
 
 import static com.game.utils.Constants.PPM;
 
+import java.time.LocalTime;
+
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -30,10 +32,14 @@ public class GameInit extends Game {
     
     public static SpriteBatch batch;
     
+    private int stage;
+    
     @Override
     public void create(){
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
+        
+        stage = 1;
         
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         
@@ -91,22 +97,26 @@ public class GameInit extends Game {
     }
     
     public void update(float delta) {
-    	world.step(1 / 60f, 6, 2);
     	
-    	for(College i : colleges) {
-    		if(i != null) {
-    			i.update(delta);
-    		}
+    	if (stage == 1) {
+	    	for(College i : colleges) {
+	    		if(i != null) {
+	    			i.update(delta);
+	    		}
+	    	}
+	    	gameScreen.cameraUpdate(delta, colleges[0].ships[0].body);
+	    	batch.setProjectionMatrix(gameScreen.combinedCamera());
+	    	world.step(1 / 60f, 6, 2);
+	        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+	            gameScreen.pause();
+	            stage = 2;
+	        }
+    	} else if (stage == 2) {
+    		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+	            gameScreen.resume();
+	            stage = 1;
+	        }
     	}
-    	gameScreen.cameraUpdate(delta, colleges[0].ships[0].body);
-    	batch.setProjectionMatrix(gameScreen.combinedCamera());
-
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
-            gameScreen.pause();
-            if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
-                gameScreen.resume();
-            }
-        }
     }
 
     @Override
