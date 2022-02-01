@@ -6,6 +6,9 @@ import com.badlogic.gdx.Input;
 public class PlayerShip extends Ship {
 
 	private int hp = 5000;
+	private float velocity = 0;
+	@SuppressWarnings("unused")
+	private int points = 0;
 
 	PlayerShip(College college) {
 		super(college);
@@ -42,6 +45,10 @@ public class PlayerShip extends Ship {
     	} else if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
     		shoot(false);
     	}
+    	
+    	if (velocity != 0){
+			points += 10;
+		}
     	
     	return false;
     }

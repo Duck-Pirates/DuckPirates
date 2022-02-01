@@ -29,6 +29,7 @@ class GameInit extends Game{
     + {static} [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/g2d/SpriteBatch.html SpriteBatch]] batch 
     - [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Box2DDebugRenderer.html Box2DDebugRenderer]] b2dr 
     - College[] colleges
+    - int stage
     ..Override Methods..
     + void create()
     + void render()
@@ -139,7 +140,10 @@ class BodyEditorLoader{
 }
 }
 class CreateObject{
-+ {static} Body createObject(String file, float x, float y, int scale, boolean isStatic)
++ {static} [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Body.html Body]] createObject(String file, float x, float y, int scale, boolean isStatic)
+}
+package com.game.utils.AISearch{
+
 }
 }
 
@@ -180,6 +184,10 @@ end note
 
 note right of Ship::update
  Returns true if the ship has been sunk, false otherwise
+end note
+
+note bottom of com.game.utils.AISearch
+ Contains the code that lets the ship move around autonously (Still needs to be implmented entirely)
 end note
 
 footer Diagram By Davide Filippo Bressani
