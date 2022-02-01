@@ -1,36 +1,32 @@
 package com.game;
 
-import static com.game.utils.Constants.PPM;
 import static com.game.utils.CreateObject.createObject;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 public class Ship {
 	
-	@SuppressWarnings("unused")
-	private College college;
-    public Body body;
-    public Texture texture;
-    private Body[] shots = new Body[5];
+	protected College college;
+    protected Body body;
+    protected Texture texture;
+    protected Bullet[] bullets = new Bullet[5];
     
-    private float velocity = 0;
-    private int hp = 5000;
-    private int maxAmo = 100;
-    private int ammunitonStock = 50;
-    private int numberOfGuns;
+    protected float velocity = 0;
+    protected int hp = 5000;
+    protected int maxAmmo = 100;
+    protected int ammo = 50;
+    protected int numberOfGuns;
+    protected float maxVelocity = 4;
     
     Ship(College college) {
     	
     	this.college = college;
-    	body = createObject("ship/hitbox/shipHitbox.json", college.getX(), college.getY(), 64, false);
-    	texture = new Texture("ship/image/" + college.name + ".png");
+    	body = (createObject("ship/hitbox/shipHitbox.json", college.getX(), college.getY(), 64, false));
+    	texture = (new Texture("ship/image/" + college.getName() + ".png"));
     	
-    	numberOfGuns = 5
-    			;
+    	numberOfGuns = 5;
     }
     
     public boolean update(float delta) {
@@ -40,40 +36,56 @@ public class Ship {
     		return false;
     }
     
-    public float velocityUpdate(float velocity, int drivingForce, float delta) {
-    	return velocity + (drivingForce - (velocity * 0.2f)) * delta;
+    public void velocityUpdate(int linearAcceleration, float delta) {
+    	
+    	velocity = velocity + (linearAcceleration * delta) * (1 - velocity / maxVelocity);
+    	if (velocity < -0.5f)
+    		velocity = -0.5f;
+    	float horizontalVelocity = -velocity * MathUtils.sin(body.getAngle());
+    	float verticalVelocity = velocity * MathUtils.cos(body.getAngle());
+    	body.setLinearVelocity(horizontalVelocity, verticalVelocity);
     }
     
-    public float rotationUpdate(int rotation, float velocity, float delta) {
-    	return rotation * velocity * 0.2f;
+    public void rotationUpdate(int angularAcceleration, float delta) {
+    	float angularVelocity = body.getAngularVelocity() + (angularAcceleration * delta) * (velocity / maxVelocity);
+    	body.setAngularVelocity(angularVelocity);
     }
     
     public void shoot(boolean right) {
     	for (int i = 0; i < numberOfGuns; i++) {
-    		
-            BodyDef bd = new BodyDef();
-            bd.position.set(body.getPosition().x, body.getPosition().y);
-        	bd.type = BodyDef.BodyType.DynamicBody;
-    		
-    		shots[i] = GameInit.world.createBody(bd);
-    		
-    		PolygonShape shape = new PolygonShape();
-    		shape.setAsBox(1 / PPM, 1 / PPM);
-    		
-    		shots[i].createFixture(shape, 1.0f);
-    		shape.dispose();
-
-    		if(right) {
-	    		shots[i].setTransform(body.getPosition().x + 11f / PPM, body.getPosition().y + (-7f + 4f * i) / PPM, body.getAngle());
-	    		float horizontalVelocity = -4 * MathUtils.cos(body.getAngle());
-	        	float verticalVelocity = 4 * MathUtils.sin(body.getAngle());
-	    		shots[i].setLinearVelocity(horizontalVelocity, verticalVelocity);
+    		if(ammo > 0) {
+	    		if(bullets[i] != null)
+	    			GameInit.world.destroyBody(getBullets()[i].getBody());;
+	    		
+	            bullets[i] = new Bullet(right, body.getPosition().x, body.getPosition().y, body.getAngle(), i);
+	            ammo--;
     		} else {
-    			shots[i].setTransform(body.getPosition().x - 11f / PPM, body.getPosition().y + (-7f + 4f * i) / PPM, body.getAngle());
-	    		float horizontalVelocity = -4 * MathUtils.cos(body.getAngle());
-	        	float verticalVelocity = 4 * MathUtils.sin(body.getAngle());
-	    		shots[i].setLinearVelocity(horizontalVelocity, verticalVelocity);
+    			return;
     		}
     	}
     }
+    
+    public int addAmmo(int value) {
+    	
+    	if (ammo + value > maxAmmo) {
+    		int diff = maxAmmo - ammo;
+    		ammo = maxAmmo;
+    		return value - diff;
+    	}
+    	
+    	ammo += value;
+    	return 0;
+    }
+
+	public Bullet[] getBullets() {
+		return bullets;
+	}
+
+	public Texture getTexture() {
+		return texture;
+	}
+
+	public Body getBody() {
+		return body;
+	}
 }

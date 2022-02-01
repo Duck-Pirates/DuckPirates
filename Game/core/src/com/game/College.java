@@ -7,11 +7,12 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 public class College {
 
-    public String name;
-    private Body body;
-    public Ship[] ships;
+    private String name;
+    @SuppressWarnings("unused")
+	private Body body;
+    private Ship[] ships;
     
-    public Texture texture;
+    private Texture texture;
     
     private int hp = 10000;
     
@@ -33,7 +34,7 @@ public class College {
     		return true;
     	}
     	
-    	for(Ship i : ships) {
+    	for(Ship i : getShips()) {
     		if(i != null) {
     			i.update(delta);
     		}
@@ -70,4 +71,16 @@ public class College {
     public float getY() {
     	return y;
     }
+
+	public Texture getTexture() {
+		return texture;
+	}
+
+	public Ship[] getShips() {
+		return ships;
+	}
+
+	public String getName() {
+		return name;
+	}
 }
