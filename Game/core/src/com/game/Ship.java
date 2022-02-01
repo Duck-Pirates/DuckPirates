@@ -1,5 +1,6 @@
 package com.game;
 
+import static com.game.utils.Constants.PPM;
 import static com.game.utils.CreateObject.createObject;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -57,7 +58,17 @@ public class Ship {
 	    		if(bullets[i] != null)
 	    			GameInit.world.destroyBody(getBullets()[i].getBody());;
 	    		
-	            bullets[i] = new Bullet(right, body.getPosition().x, body.getPosition().y, body.getAngle(), i);
+	    		float x;
+	    		float y;
+	    		if (right) {
+		    		x = body.getPosition().x - (-12 * MathUtils.cos(body.getAngle()) + (-7f + 4f * i) * MathUtils.sin(body.getAngle())) / PPM;
+		    		y = body.getPosition().y - (-12 * MathUtils.sin(body.getAngle()) - (-7f + 4f * i) * MathUtils.cos(body.getAngle())) / PPM;
+	    		} else {
+	    			x = body.getPosition().x + (-12 * MathUtils.cos(body.getAngle()) + (-7f + 4f * i) * MathUtils.sin(body.getAngle())) / PPM;
+	    			y = body.getPosition().y + (-12 * MathUtils.sin(body.getAngle()) - (-7f + 4f * i) * MathUtils.cos(body.getAngle())) / PPM;
+	    		}
+	    		
+	            bullets[i] = new Bullet(right, x, y, body.getLinearVelocity().x, body.getLinearVelocity().y, body.getAngle());
 	            ammo--;
     		} else {
     			return;
