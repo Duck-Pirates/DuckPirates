@@ -8,6 +8,7 @@ public class PlayerShip extends Ship {
 
 	private float velocity = 0;
     private int hp = 5000;
+	private int points = 0;
 
 	PlayerShip(College college) {
 		super(college);
@@ -47,6 +48,10 @@ public class PlayerShip extends Ship {
     	float horizontalVelocity = -velocity * MathUtils.sin(body.getAngle());
     	float verticalVelocity = velocity * MathUtils.cos(body.getAngle());
     	body.setLinearVelocity(horizontalVelocity, verticalVelocity);
+
+		if (velocity != 0){
+			points += 10;
+		}
     	
     	float newAngle = super.rotationUpdate(rotation, velocity, delta) * rotationScale + body.getAngle();
     	body.setTransform(body.getPosition(), newAngle);
