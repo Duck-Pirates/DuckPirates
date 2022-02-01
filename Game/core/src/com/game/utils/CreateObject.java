@@ -19,8 +19,10 @@ public class CreateObject {
         
         if(isStatic) 
     		bd.type = BodyDef.BodyType.StaticBody;
-    	else 
+    	else {
     		bd.type = BodyDef.BodyType.DynamicBody;
+        	bd.angularDamping = 2f;
+    	}
      
         // 2. Create a FixtureDef.
         FixtureDef fd = new FixtureDef();

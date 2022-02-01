@@ -51,6 +51,11 @@ public class PlayerShip extends Ship {
     	float newAngle = super.rotationUpdate(rotation, velocity, delta) * rotationScale + body.getAngle();
     	body.setTransform(body.getPosition(), newAngle);
     	
+    	if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+    		shoot(true);
+    	} else if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+    		shoot(false);
+    	}
     	
     	return false;
     }
