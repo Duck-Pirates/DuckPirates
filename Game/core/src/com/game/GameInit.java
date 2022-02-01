@@ -18,8 +18,6 @@ public class GameInit extends Game {
 
     //TODO Pause Screen and End Game Screen
     //TODO Combact College
-    //TODO Private Classes
-    //TODO Points
 
 
     GameInfo gameInfo = new GameInfo("Derwent", 4);
