@@ -18,12 +18,14 @@ public class GameInit extends Game {
 
     //TODO Pause Screen and End Game Screen
     //TODO Combact College
-    //TODO Private Classes
-    //TODO Points
 
 
     GameInfo gameInfo = new GameInfo("Derwent", 4);
     GameScreen gameScreen;
+    
+    
+    // Not implemented yet. Ideal is to delete Bodys only after all physics have been calculated to avoid errors
+    // public Body[] toDelete;
     
     private Box2DDebugRenderer b2dr;
     public static World world;
@@ -48,19 +50,23 @@ public class GameInit extends Game {
         world = new World(new Vector2(0, 0f), false);
         b2dr = new Box2DDebugRenderer();
         
-        colleges = new College[gameInfo.numberOfColleges];
+        colleges = new College[gameInfo.getNumOfColleges()];
         
-        for(int i = 0; i < gameInfo.numberOfColleges; i++) {
+        for(int i = 0; i < gameInfo.getNumOfColleges(); i++) {
         	if(i != 0) {
-	        	colleges[i] = new College(gameInfo.colleges[i], 128f * i, 128f);
+	        	colleges[i] = new College(gameInfo.getColleges()[i], 128f * i, 128f);
 	        	colleges[i].addShip();
         	} else {
-	        	colleges[i] = new College(gameInfo.colleges[i], 128f * i, 128f);
+	        	colleges[i] = new College(gameInfo.getColleges()[i], 128f * i, 128f);
         		colleges[i].addPlayer();
 	        }
         }
         
         batch = new SpriteBatch();
+        
+        // Max number of bodies to be deleted is the theoretical max number of ships and bullets
+        // int maxTotalShips = GameInfo.getMaxNumShips() * GameInfo.getNumOfColleges();
+        // toDelete = new Body[maxTotalShips + maxTotalShips * 5];
     }
     
     @Override
@@ -75,16 +81,25 @@ public class GameInit extends Game {
         
         for(College i : colleges) {
         	if (i != null) {
-	        	for(Ship j : i.ships) {
+	        	for(Ship j : i.getShips()) {
 	        		if (j != null) {
-		        		Sprite sprite = new Sprite(j.texture);
+	        			for(Bullet k : j.getBullets()) {
+	        				if (k != null) {
+		        				Sprite sprite = new Sprite(k.getTexture());
+				        		sprite.setOrigin(1.5f, 1.5f);
+				                sprite.setPosition(k.getBody().getPosition().x * PPM - 1.5f, k.getBody().getPosition().y * PPM - 1.5f);
+				                sprite.setRotation(k.getBody().getAngle() * MathUtils.radiansToDegrees);
+				                sprite.draw(batch);
+	        				}
+	        			}
+		        		Sprite sprite = new Sprite(j.getTexture());
 		        		sprite.setOrigin(32f, 23.5f);
-		                sprite.setPosition(j.body.getPosition().x * PPM - 32f, j.body.getPosition().y * PPM - 23.5f);
-		                sprite.setRotation(j.body.getAngle() * MathUtils.radiansToDegrees);
+		                sprite.setPosition(j.getBody().getPosition().x * PPM - 32f, j.getBody().getPosition().y * PPM - 23.5f);
+		                sprite.setRotation(j.getBody().getAngle() * MathUtils.radiansToDegrees);
 		                sprite.draw(batch);
 	        		}
 	        	}
-	        	Sprite sprite = new Sprite(i.texture);
+	        	Sprite sprite = new Sprite(i.getTexture());
 	        	sprite.setOrigin(64f, 64f);
 	            sprite.setPosition(i.getX(), i.getY());
 	            sprite.draw(batch);
@@ -104,7 +119,7 @@ public class GameInit extends Game {
 	    			i.update(delta);
 	    		}
 	    	}
-	    	gameScreen.cameraUpdate(delta, colleges[0].ships[0].body);
+	    	gameScreen.cameraUpdate(colleges[0].getShips()[0].getBody(), delta);
 	    	batch.setProjectionMatrix(gameScreen.combinedCamera());
 	    	world.step(1 / 60f, 6, 2);
 	        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){

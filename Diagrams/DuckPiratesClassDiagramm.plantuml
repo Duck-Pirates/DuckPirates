@@ -29,6 +29,7 @@ class GameInit extends Game{
     + {static} [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/g2d/SpriteBatch.html SpriteBatch]] batch 
     - [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Box2DDebugRenderer.html Box2DDebugRenderer]] b2dr 
     - College[] colleges
+    - int stage
     ..Override Methods..
     + void create()
     + void render()
@@ -40,13 +41,13 @@ class GameInit extends Game{
 
 class College{
     ..Attributes..
-    + String name
-    + Ship[] ships
-    + [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/Texture.html Texture]] texture
     + int n_ducks
     + int coins
+    - String name
     - [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Body.html Body]] body
-    - int hp = 1000
+    - Ship[] ships
+    - [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/Texture.html Texture]] texture
+    - int hp = 10000
     - float x
     - float y
     ..Class Methods..
@@ -56,32 +57,51 @@ class College{
     + void addShip()
     + float getX()
     + float getY()
+    + [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/Texture.html Texture]] getTexture()
+    + Ship[] getShips()
+    + String getName()
 }
 
 class Ship{
 ..Attributes..
-+ Body body
-+ Texture texture
-- College college
-- float velocity = 0
-- int hp = 5000
-- int maxAmo = 100
-- int ammunitonStock = 50
+# [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Body.html Body]] body
+# [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/Texture.html Texture]] texture
+# College college
+# Bullet[] bullets = new Bullet[5]
+# float velocity = 0
+# int hp = 5000
+# int maxAmmo = 100
+# int ammo = 50
+# int numberOfGuns
+# int maxVelocity = 4
 ..Class Methods..
 + Ship(College college)
 + boolean update(float delta)
-+ float velocityUpdate(float velocity, int drivingForce, float delta)
-+ float rotationUpdate(int rotation, float velocity, float delta)
++ float velocityUpdate(int linearAcceleration, float delta)
++ float rotationUpdate(int angularAcceleration, float delta)
++ void shoot(boolean right)
++ int addAmmo(int value)
++ Bullet[] getBullets()
++ [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/Texture.html Texture]] getTexture()
++ [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Body.html Body]] getBody()
 }
 
 class CPUShip extends Ship{
+..Attributes..
+- int mode = 0
+- int countDown = 0
+- int direction = 0
+..Class Methods..
 + CPUShip(College college)
++ boolean update(float delta)
+- void explore(float delta)
 }
 
 class PlayerShip extends Ship{
 ..Attributes..
-- float velocity = 0;
+- float velocity = 0
 - int hp = 5000
+- int points = 0
 ..Override Methods..
 + boolean update(float delta)
 ..Class Methods..
@@ -95,26 +115,23 @@ Class GameInfo{
 + double musicVolume = 0.5
 + double soundFxVolume = 0.5
 + String playerCollege
-+ int numberOfColleges
++ int numOfColleges
 + {static} String[] collegesNames
 + String[10] colleges
 - {static} int maxNumShips = 5
 - {static} int maxNumDucks = 50
 - {static} float coinsPerDuckPerSecond = 1.5
 ..Class Methods..
-+ {static} int getMaxNumBoats()
-+ {static} int getMaxNumDucks()
-+ {static} float getCoinsPerDuckPerSecond()
++ GameInfo(String playerCollege, int numColleges)
++ {static} int getMaxNumShips()
++ int getNumOfColleges()
++ String[] getColleges()
 }
 
 Class GameScreen implements Screen{
 ..Attributes..
 - [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/OrthographicCamera.html OrthographicCamera]] camera
-- [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/utils/viewport/Viewport.html Viewport]] viewport
 - [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/Texture.html Texture]] background
-- int backgroundOffset
-- {static} int WORLD_WIDTH = 0
-- {static} int WORLD_HEIGHT = 0
 ..Override Methods..
 + void render(float delta)
 + void resize(int width, int height)
@@ -125,8 +142,18 @@ Class GameScreen implements Screen{
 + void dispose()
 ..Class Methods..
 + GameScreen(float width, float height)
-+ void cameraUpdate(float delta, [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Body.html Body]] player)
++ void cameraUpdate([[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Body.html Body]] player, float delta)
 + [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/math/Matrix4.html Matrix4]] combinedCamera()
+}
+class Bullet{
+..Attributes..
+- [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Body.html Body]] body
+- [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/Texture.html Texture]] texture
+..Class Methods..
++ Bullet(boolean right, float x, float y, float relativeXVelocity, float relativeYVelocity, float angle)
++ boolean update(float delta)
++ [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Body.html Body]] getBody()
++ [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/Texture.html Texture]] getTexture()
 }
 }
 package com.game.utils{
@@ -139,7 +166,10 @@ class BodyEditorLoader{
 }
 }
 class CreateObject{
-+ {static} Body createObject(String file, float x, float y, int scale, boolean isStatic)
++ {static} [[https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/physics/box2d/Body.html Body]] createObject(String file, float x, float y, int scale, boolean isStatic)
+}
+package com.game.utils.AISearch{
+
 }
 }
 
@@ -152,6 +182,8 @@ GameInit::GameInfo *-- GameInfo
 GameInit::College *-- College
 College::Ship *-- Ship
 PlayerShip::update .. Ship::update
+Ship::Bullet *-- Bullet
+Ship::College *-- College
 
 ' Notes /'
 note top of Game
@@ -182,5 +214,9 @@ note right of Ship::update
  Returns true if the ship has been sunk, false otherwise
 end note
 
-footer Diagram By Davide Filippo Bressani
+note bottom of com.game.utils.AISearch
+ Contains the code that lets the ship move around autonously (Still needs to be implmented entirely)
+end note
+
+footer Diagram By Davide Filippo Bressani (Source code can be found on [[https://github.com/Duck-Pirates/DuckPirates/blob/main/Diagrams/DuckPiratesClassDiagramm.plantuml Github]])
 @enduml

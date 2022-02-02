@@ -22,6 +22,7 @@ public class CreateObject {
     	else {
     		bd.type = BodyDef.BodyType.DynamicBody;
         	bd.angularDamping = 2f;
+        	bd.linearDamping = 2f;
     	}
      
         // 2. Create a FixtureDef.
